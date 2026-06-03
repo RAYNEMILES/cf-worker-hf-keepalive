@@ -1,128 +1,128 @@
-# Hugging Face 保活服务 - Cloudflare Workers 版本
+# Hugging Face Keepalive Service - Cloudflare Workers
 
-一个功能完整的 Hugging Face Space 保活服务，支持多链接管理、自动保活、Web 界面和 RESTful API。
+A fully-featured Hugging Face Space keepalive service that supports multiple links management, automatic keepalive, web interface, and RESTful API.
 
-## ✨ 功能特性
+## ✨ Features
 
-- 🔄 **自动保活**：定时自动唤醒所有启用的 HF Space
-- 📊 **Web 管理界面**：可视化管理 Space，支持增删改查
-- 🔌 **RESTful API**：完整的 API 接口，支持程序化操作
-- 📝 **保活日志**：详细记录每次保活的结果和耗时
-- ⚙️ **灵活配置**：可自定义每个 Space 的保活间隔
-- 🎯 **状态控制**：可随时启用/禁用特定 Space
-- 💾 **数据持久化**：使用 Cloudflare D1 数据库存储数据
-- 🆓 **完全免费**：基于 Cloudflare Workers 免费额度
+- 🔄 **Automatic Keepalive**：Automatically wake up all enabled HF Spaces on schedule
+- 📊 **Web Management Interface**：Visually manage Spaces with CRUD operations
+- 🔌 **RESTful API**：Complete API interface for programmatic operations
+- 📝 **Keepalive Logs**：Detailed logging of every keepalive attempt and duration
+- ⚙️ **Flexible Configuration**：Customize keepalive intervals per Space
+- 🎯 **Status Control**：Enable/disable specific Spaces anytime
+- 💾 **Data Persistence**：Data stored in Cloudflare D1 database
+- 🆓 **Completely Free**：Built on Cloudflare Workers free tier
 
-## 📋 前置条件
+## 📋 Prerequisites
 
-- Cloudflare 账户（免费账户即可）
-- Node.js 18+（用于本地开发，可选）
-- Wrangler CLI（用于部署，可选）
+- Cloudflare account (free tier works)
+- Node.js 18+ (for local development, optional)
+- Wrangler CLI (for deployment, optional)
 
-## 🚀 快速部署
+## 🚀 Quick Deployment
 
-### 方法一：使用 Cloudflare Dashboard 部署（推荐新手）
+### Method 1: Deploy via Cloudflare Dashboard (Recommended for Beginners)
 
-#### 步骤 1：创建 D1 数据库
+#### Step 1: Create D1 Database
 
-1. 登录 [Cloudflare Dashboard](https://dash.cloudflare.com/)
-2. 进入 **Workers & Pages** → **D1**
-3. 点击 **创建数据库**
-4. 输入数据库名称：`hf-keepalive-db`
-5. 点击 **创建**
+1. Log in to [Cloudflare Dashboard](https://dash.cloudflare.com/)
+2. Go to **Workers & Pages** → **D1**
+3. Click **Create Database**
+4. Enter database name: `hf-keepalive-db`
+5. Click **Create**
 
-#### 步骤 2：初始化数据库表
+#### Step 2: Initialize Database Tables
 
-1. 在刚创建的数据库页面，点击 **控制台**
-2. 复制 `schema.sql` 文件的内容
-3. 粘贴到控制台输入框中
-4. 点击 **执行**
-5. 确认表创建成功
+1. On the newly created database page, click **Console**
+2. Copy contents from `schema.sql`
+3. Paste into the console input
+4. Click **Run**
+5. Confirm table creation is successful
 
-#### 步骤 3：创建 Worker
+#### Step 3: Create Worker
 
-1. 进入 **Workers & Pages** → **创建应用程序** → **创建 Worker**
-2. 输入服务名称：`hf-keepalive`
-3. 点击 **部署**
+1. Go to **Workers & Pages** → **Create Application** → **Create Worker**
+2. Enter service name: `hf-keepalive`
+3. Click **Deploy**
 
-#### 步骤 4：部署代码
+#### Step 4: Deploy Code
 
-1. 进入刚创建的 Worker
-2. 点击 **编辑代码**
-3. 将 `index.js` 的内容粘贴到编辑器中
-4. 点击 **部署**
+1. Go to the newly created Worker
+2. Click **Edit Code**
+3. Paste contents from `index.js` into the editor
+4. Click **Deploy**
 
-#### 步骤 5：绑定数据库
+#### Step 5: Bind Database
 
-1. 在 Worker 页面，点击 **设置** → **变量**
-2. 在 **D1 数据库绑定** 部分，点击 **添加绑定**
-3. 配置：
-   - **变量名称**: `DB`
-   - **D1 数据库**: 选择 `hf-keepalive-db`
-4. 点击 **保存并部署**
+1. On Worker page, click **Settings** → **Variables**
+2. In the **D1 Database Bindings** section, click **Add Binding**
+3. Configure:
+   - **Variable Name**：`DB`
+   - **D1 Database**：Select `hf-keepalive-db`
+4. Click **Save and Deploy**
 
-#### 步骤 6：配置定时触发器
+#### Step 6: Configure Cron Trigger
 
-1. 在 Worker 页面，点击 **触发器**
-2. 在 **Cron Triggers** 部分，点击 **添加 Cron Trigger**
-3. 配置：
-   - **名称**: `keepalive-trigger`
-   - **调度**: `0 */30 * * *`（每 30 分钟执行一次）
-4. 点击 **添加触发器**
+1. On Worker page, click **Triggers**
+2. In the **Cron Triggers** section, click **Add Cron Trigger**
+3. Configure:
+   - **Name**：`keepalive-trigger`
+   - **Schedule**：`0 */30 * * *` (every 30 minutes)
+4. Click **Add Trigger**
 
-#### 步骤 7：完成部署
+#### Step 7: Complete Deployment
 
-1. 复制你的 Worker URL（格式：`https://hf-keepalive.你的用户名.workers.dev`）
-2. 在浏览器中打开该 URL
-3. 开始添加你的 HF Space！
+1. Copy your Worker URL (format: `https://hf-keepalive.your-username.workers.dev`)
+2. Open the URL in your browser
+3. Start adding your HF Spaces!
 
 ---
 
-### 方法二：使用 Wrangler CLI 部署（推荐开发者）
+### Method 2: Deploy via Wrangler CLI (Recommended for Developers)
 
-#### 步骤 1：安装 Wrangler
+#### Step 1: Install Wrangler
 
 ```bash
 npm install -g wrangler
 ```
 
-#### 步骤 2：登录 Cloudflare
+#### Step 2: Log in to Cloudflare
 
 ```bash
 wrangler login
 ```
 
-#### 步骤 3：创建 D1 数据库
+#### Step 3: Create D1 Database
 
 ```bash
 wrangler d1 create hf-keepalive-db
 ```
 
-#### 步骤 4：初始化数据库
+#### Step 4: Initialize Database
 
 ```bash
-# 替换为你的数据库 ID
+# Replace with your database ID
 wrangler d1 execute hf-keepalive-db --file=schema.sql
 ```
 
-#### 步骤 5：配置 wrangler.toml
+#### Step 5: Configure wrangler.toml
 
-编辑 `wrangler.toml`，将 `your-database-id` 替换为实际的数据库 ID：
+Edit `wrangler.toml`, replace `your-database-id` with your actual database ID:
 
 ```toml
 [[d1_databases]]
 binding = "DB"
 database_name = "hf-keepalive-db"
-database_id = "你的实际数据库ID"
+database_id = "your-actual-database-id"
 ```
 
-#### 步骤 6：部署 Worker
+#### Step 6: Deploy Worker
 
 ```bash
 wrangler deploy
 ```
 
-#### 步骤 7：配置 Cron Trigger
+#### Step 7: Configure Cron Trigger
 
 ```bash
 wrangler cron schedule "0 */30 * * *"
@@ -130,37 +130,37 @@ wrangler cron schedule "0 */30 * * *"
 
 ---
 
-## 📖 使用指南
+## 📖 Usage Guide
 
-### Web 界面使用
+### Using the Web Interface
 
-1. **添加 Space**：
-   - 在首页表单中输入名称和 URL
-   - 设置保活间隔（默认 30 分钟）
-   - 点击"添加"按钮
+1. **Add a Space**：
+   - Enter name and URL in the homepage form
+   - Set keepalive interval (default 30 minutes)
+   - Click "Add" button
 
-2. **管理 Space**：
-   - 查看所有 Space 的状态
-   - 启用/禁用特定 Space
-   - 删除不需要的 Space
+2. **Manage Spaces**：
+   - View status of all Spaces
+   - Enable/disable specific Spaces
+   - Delete unwanted Spaces
 
-3. **手动保活**：
-   - 点击"手动保活"按钮
-   - 立即触发所有启用的 Space 保活
+3. **Manual Keepalive**：
+   - Click "Manual Keepalive" button
+   - Immediately trigger keepalive for all enabled Spaces
 
-4. **查看日志**：
-   - 在页面底部查看最近的保活日志
-   - 包含时间、状态、耗时等信息
+4. **View Logs**：
+   - View recent keepalive logs at the bottom of the page
+   - Includes timestamp, status, duration, etc.
 
-### RESTful API 使用
+### Using the RESTful API
 
-#### 获取所有 Space
+#### Get All Spaces
 
 ```bash
-curl https://hf-keepalive.你的用户名.workers.dev/api/spaces
+curl https://hf-keepalive.your-username.workers.dev/api/spaces
 ```
 
-响应：
+Response:
 ```json
 {
   "success": true,
@@ -177,10 +177,10 @@ curl https://hf-keepalive.你的用户名.workers.dev/api/spaces
 }
 ```
 
-#### 添加 Space
+#### Add a Space
 
 ```bash
-curl -X POST https://hf-keepalive.你的用户名.workers.dev/api/spaces \
+curl -X POST https://hf-keepalive.your-username.workers.dev/api/spaces \
   -H "Content-Type: application/json" \
   -d '{
     "name": "My Space",
@@ -189,10 +189,10 @@ curl -X POST https://hf-keepalive.你的用户名.workers.dev/api/spaces \
   }'
 ```
 
-#### 更新 Space
+#### Update a Space
 
 ```bash
-curl -X PUT https://hf-keepalive.你的用户名.workers.dev/api/spaces/1 \
+curl -X PUT https://hf-keepalive.your-username.workers.dev/api/spaces/1 \
   -H "Content-Type: application/json" \
   -d '{
     "enabled": false,
@@ -200,198 +200,198 @@ curl -X PUT https://hf-keepalive.你的用户名.workers.dev/api/spaces/1 \
   }'
 ```
 
-#### 删除 Space
+#### Delete a Space
 
 ```bash
-curl -X DELETE https://hf-keepalive.你的用户名.workers.dev/api/spaces/1
+curl -X DELETE https://hf-keepalive.your-username.workers.dev/api/spaces/1
 ```
 
-#### 手动触发保活
+#### Trigger Keepalive Manually
 
 ```bash
-# 保活所有启用的 Space
-curl -X POST https://hf-keepalive.你的用户名.workers.dev/api/keepalive \
+# Keepalive all enabled Spaces
+curl -X POST https://hf-keepalive.your-username.workers.dev/api/keepalive \
   -H "Content-Type: application/json" \
   -d '{}'
 
-# 保活特定 Space
-curl -X POST https://hf-keepalive.你的用户名.workers.dev/api/keepalive \
+# Keepalive a specific Space
+curl -X POST https://hf-keepalive.your-username.workers.dev/api/keepalive \
   -H "Content-Type: application/json" \
   -d '{"id": 1}'
 ```
 
-#### 获取保活日志
+#### Get Keepalive Logs
 
 ```bash
-curl https://hf-keepalive.你的用户名.workers.dev/api/logs?limit=50
+curl https://hf-keepalive.your-username.workers.dev/api/logs?limit=50
 ```
 
 ---
 
-## ⚙️ 配置说明
+## ⚙️ Configuration
 
-### Cron 表达式
+### Cron Expression
 
-| 表达式 | 含义 |
-|--------|------|
-| `0 */30 * * *` | 每 30 分钟执行一次（推荐） |
-| `*/20 * * * *` | 每 20 分钟执行一次 |
-| `0 */15 * * *` | 每 15 分钟执行一次 |
-| `0 */60 * * *` | 每 60 分钟执行一次 |
+| Expression | Meaning |
+|------------|---------|
+| `0 */30 * * *` | Every 30 minutes (recommended) |
+| `*/20 * * * *` | Every 20 minutes |
+| `0 */15 * * *` | Every 15 minutes |
+| `0 */60 * * *` | Every 60 minutes |
 
-### 保活间隔
+### Keepalive Interval
 
-- **最小值**：5 分钟
-- **推荐值**：30 分钟
-- **最大值**：无限制
+- **Minimum**：5 minutes
+- **Recommended**：30 minutes
+- **Maximum**：Unlimited
 
-> 注意：保活间隔应小于或等于 Cron 触发器的执行间隔。
+> Note：Keepalive interval should be less than or equal to the Cron trigger interval.
 
 ---
 
-## 📊 数据库结构
+## 📊 Database Schema
 
-### spaces 表
+### spaces Table
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| id | INTEGER | 主键，自增 |
-| name | TEXT | Space 名称 |
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key, auto-increment |
+| name | TEXT | Space name |
 | url | TEXT | Space URL |
-| interval | INTEGER | 保活间隔（分钟） |
-| enabled | INTEGER | 是否启用（0/1） |
-| created_at | TIMESTAMP | 创建时间 |
-| updated_at | TIMESTAMP | 更新时间 |
+| interval | INTEGER | Keepalive interval (minutes) |
+| enabled | INTEGER | Enabled status (0/1) |
+| created_at | TIMESTAMP | Creation time |
+| updated_at | TIMESTAMP | Update time |
 
-### logs 表
+### logs Table
 
-| 字段 | 类型 | 说明 |
-|------|------|------|
-| id | INTEGER | 主键，自增 |
+| Column | Type | Description |
+|--------|------|-------------|
+| id | INTEGER | Primary key, auto-increment |
 | space_id | INTEGER | Space ID |
-| space_name | TEXT | Space 名称 |
-| status | TEXT | 状态（success/error） |
-| message | TEXT | 消息 |
-| http_status | INTEGER | HTTP 状态码 |
-| duration | INTEGER | 耗时（毫秒） |
-| created_at | TIMESTAMP | 创建时间 |
+| space_name | TEXT | Space name |
+| status | TEXT | Status (success/error) |
+| message | TEXT | Message |
+| http_status | INTEGER | HTTP status code |
+| duration | INTEGER | Duration (milliseconds) |
+| created_at | TIMESTAMP | Creation time |
 
 ---
 
-## 🔧 高级功能
+## 🔧 Advanced Features
 
-### 批量导入 Space
+### Bulk Import Spaces
 
 ```bash
-# 创建一个 JSON 文件 spaces.json
+# Create a JSON file spaces.json
 [
   {"name": "Space 1", "url": "https://space1.hf.space", "interval": 30},
   {"name": "Space 2", "url": "https://space2.hf.space", "interval": 45}
 ]
 
-# 批量导入
+# Bulk import
 for space in $(cat spaces.json | jq -c '.[]'); do
-  curl -X POST https://hf-keepalive.你的用户名.workers.dev/api/spaces \
+  curl -X POST https://hf-keepalive.your-username.workers.dev/api/spaces \
     -H "Content-Type: application/json" \
     -d "$space"
 done
 ```
 
-### 监控告警
+### Monitoring & Alerts
 
-你可以通过检查日志 API 实现监控告警：
+You can implement monitoring alerts by checking the logs API:
 
 ```bash
-# 获取最近的错误日志
-curl https://hf-keepalive.你的用户名.workers.dev/api/logs?limit=100 | \
+# Get recent error logs
+curl https://hf-keepalive.your-username.workers.dev/api/logs?limit=100 | \
   jq '.data[] | select(.status == "error")'
 ```
 
-### 自定义域名
+### Custom Domain
 
-1. 在 Worker 设置中添加自定义域名
-2. 配置 DNS 记录指向 Worker
-3. 使用自定义域名访问
-
----
-
-## 📈 免费额度
-
-Cloudflare Workers 免费额度：
-
-| 资源 | 免费额度 | 使用情况 |
-|------|----------|----------|
-| 每日请求次数 | 100,000 | ✅ 完全够用 |
-| CPU 时间 | 10ms/请求 | ✅ 单次请求仅需几毫秒 |
-| D1 读取 | 5,000,000/天 | ✅ 完全够用 |
-| D1 写入 | 100,000/天 | ✅ 完全够用 |
-| 存储 | 5GB | ✅ 足够使用 |
+1. Add custom domain in Worker settings
+2. Configure DNS record pointing to Worker
+3. Access via custom domain
 
 ---
 
-## 🐛 故障排查
+## 📈 Free Tier Limits
 
-### 问题：数据库绑定失败
+Cloudflare Workers free tier:
 
-**解决方案**：
-1. 确认数据库 ID 正确
-2. 检查 Worker 配置中的绑定名称是否为 `DB`
-3. 重新部署 Worker
-
-### 问题：保活失败
-
-**解决方案**：
-1. 检查 Space URL 是否正确
-2. 确认 Space 是否可公开访问
-3. 查看日志获取详细错误信息
-
-### 问题：Cron 触发器不执行
-
-**解决方案**：
-1. 检查 Cron 表达式格式是否正确
-2. 确认触发器已启用
-3. 查看 Worker 日志
+| Resource | Free Limit | Usage |
+|----------|------------|-------|
+| Daily Requests | 100,000 | ✅ More than enough |
+| CPU Time | 10ms/request | ✅ Only takes a few ms |
+| D1 Reads | 5,000,000/day | ✅ More than enough |
+| D1 Writes | 100,000/day | ✅ More than enough |
+| Storage | 5GB | ✅ Sufficient |
 
 ---
 
-## 📝 注意事项
+## 🐛 Troubleshooting
 
-1. **HTTPS 必须启用**：Hugging Face Space 默认使用 HTTPS，请确保 URL 以 `https://` 开头
-2. **避免过于频繁**：建议最小间隔为 10 分钟，过于频繁可能被限制
-3. **日志清理**：建议定期清理日志，避免占用过多存储空间
-4. **安全性**：不要将 Worker URL 泄露给不信任的人
+### Issue: Database Binding Failed
+
+**Solution**：
+1. Confirm database ID is correct
+2. Check that binding name in Worker config is `DB`
+3. Redeploy Worker
+
+### Issue: Keepalive Failing
+
+**Solution**：
+1. Check if Space URL is correct
+2. Confirm Space is publicly accessible
+3. Check logs for detailed error info
+
+### Issue: Cron Trigger Not Executing
+
+**Solution**：
+1. Check that Cron expression format is correct
+2. Confirm trigger is enabled
+3. Check Worker logs
 
 ---
 
-## 🎯 最佳实践
+## 📝 Notes
 
-1. **合理设置间隔**：根据 Space 的重要性设置不同的保活间隔
-2. **定期检查日志**：及时发现和解决问题
-3. **使用自定义域名**：更专业，便于管理
-4. **监控资源使用**：关注 Cloudflare 免费额度的使用情况
+1. **HTTPS Required**：Hugging Face Spaces use HTTPS by default, ensure URL starts with `https://`
+2. **Avoid Over-frequent**：Minimum interval of 10 minutes recommended, too frequent may be rate-limited
+3. **Log Cleanup**：Periodically clean up logs to avoid excessive storage
+4. **Security**：Do not share Worker URL with untrusted parties
 
 ---
 
-## 📄 许可证
+## 🎯 Best Practices
+
+1. **Reasonable Intervals**：Set different intervals based on Space importance
+2. **Regular Log Checks**：Detect and resolve issues early
+3. **Use Custom Domain**：More professional and easier to manage
+4. **Monitor Usage**：Keep an eye on Cloudflare free tier usage
+
+---
+
+## 📄 License
 
 MIT License
 
 ---
 
-## 🤝 贡献
+## 🤝 Contributing
 
-欢迎提交 Issue 和 Pull Request！
+Issues and Pull Requests welcome!
 
 ---
 
-## 📧 联系方式
+## 📧 Contact
 
-如有问题，请通过以下方式联系：
-- 提交 GitHub Issue
-- 发送邮件至 [your-email]
+For questions, reach out via:
+- Submit GitHub Issue
+- Email: [your-email]
 
 ---
 
 ## 🌟 Star History
 
-如果这个项目对你有帮助，请给个 Star！⭐
+If this project helps you, please give it a Star! ⭐
