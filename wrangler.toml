@@ -1,0 +1,14 @@
+name = "cf-worker-hf-keepalive"
+main = "index.js"
+compatibility_date = "2024-01-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "hf-keepalive-db"
+database_id = "dc66ef09-374f-4c6b-975a-7edc7fbc7195"
+
+[vars]
+TURNSTILE_SITE_KEY = "0x4AAAAAADO6Bwwk_LSRe1BI"
+
+[triggers]
+crons = ["*/30 * * * *"]
