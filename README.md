@@ -167,7 +167,7 @@ Response:
   "data": [
     {
       "id": 1,
-      "name": "Crypto Monitor",
+      "name": "My AI Demo",
       "url": "https://xxx.hf.space",
       "interval": 30,
       "enabled": 1,

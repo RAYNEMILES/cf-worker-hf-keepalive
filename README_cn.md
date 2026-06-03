@@ -167,7 +167,7 @@ curl https://hf-keepalive.你的用户名.workers.dev/api/spaces
   "data": [
     {
       "id": 1,
-      "name": "Crypto Monitor",
+      "name": "AI演示",
       "url": "https://xxx.hf.space",
       "interval": 30,
       "enabled": 1,

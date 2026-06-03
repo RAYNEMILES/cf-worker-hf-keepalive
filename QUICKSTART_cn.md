@@ -40,7 +40,7 @@
 ```bash
 curl -X POST https://你的worker.workers.dev/api/spaces \
   -H "Content-Type: application/json" \
-  -d '{"name":"我的Space","url":"https://xxx.hf.space","interval":30}'
+  -d '{"name":"AI演示Space","url":"https://xxx.hf.space","interval":30}'
 ```
 
 ### 获取所有 Space
